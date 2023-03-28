@@ -1,0 +1,27 @@
+open_chatbot <- function() {
+  print("Hello! My name is Pasit from Music Channel, May i ask you? ")
+
+  cat("What is your name? : ")
+  name <- readLines("stdin", 1)
+  print(paste("Hi!",name,"nice to meet you."))
+
+  cat("How old are you? : ")
+  age <- readLines("stdin",1)
+  print(paste("Really!",name,"you are look good"))
+
+  cat("Which music band or soloist do you like the most? :")
+  artist <- readLines("stdin",1)
+  print(paste("WOW!", artist,"very cool" ))
+
+  cat("Which song do you like ? : ")
+  song <- readLines ("stdin",1)
+  print(paste("I think so ",song,"from",artist,"that so cool"))
+
+  
+  print("Thank you for your time")
+  print(paste("See you again next time", name ))
+  
+  }
+
+
+open_chatbot()
