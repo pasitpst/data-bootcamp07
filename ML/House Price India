@@ -1,0 +1,105 @@
+library(readxl)
+library(caret)
+library(tidyverse)
+house_data <- read_excel("House Price India.xlsx")
+View(house_data)
+
+# train test split
+# 1. split data
+# 2. train
+# 3. score
+# 4. evaluate
+
+glimpse(house_data)
+# split data 80 : 20
+train_test_split <- function(data, trainRatio = 0.8){
+  set.seed(45)
+  (n <- nrow(data))
+  (id<- sample(1:n, size = trainRatio*n))
+  
+  train_data <- data[id, ]
+  test_data <- data[-id, ]
+  return(list(train = train_data, test = test_data))
+}
+
+splitData <- train_test_split(house_data, 0.8)
+train_data <- splitData[[1]]
+test_data <- splitData[[2]]
+
+## Normalization
+train_data$Price_nor <- log(train_data$Price)
+test_data$Price_nor <- log(test_data$Price)
+
+#train model
+ctrl <- trainControl(
+  method = "boot",
+  number = 50,
+  verboseIter = TRUE
+)
+
+lm_model <- train(Price_nor ~ number_of_bedrooms+
+                 living_area+
+                 Built_Year+
+                 lot_area_renov+
+                 grade_of_the_house+
+                 waterfront_present+
+                 number_of_floors,
+               data = train_data,
+               method = "lm",
+               trControl = ctrl
+               )
+
+rf_model <- train(Price_nor ~ number_of_bedrooms+
+                    living_area+
+                    Built_Year+
+                    lot_area_renov+
+                    grade_of_the_house+
+                    waterfront_present+
+                    number_of_floors,
+                  data = train_data,
+                  method = "rf",
+                  trControl = ctrl
+                  )
+
+knn_model <- train(Price_nor ~ number_of_bedrooms+
+                    living_area+
+                    Built_Year+
+                    lot_area_renov+
+                    grade_of_the_house+
+                    waterfront_present+
+                    number_of_floors,
+                  data = train_data,
+                  method = "knn",
+                  trControl = ctrl
+                  )
+
+
+# 3. Score model
+p <- predict(lm_model, newdata = test_data)
+p2 <- predict(rf_model, newdata = test_data)
+p3 <- predict(knn_model, newdata = test_data)
+
+# 4. evaluate model
+# MAE, MSE, RMSE
+
+mae_metric <- function(actual, prediction){
+  abs_error <- abs(actual-prediction)
+  mean(abs_error)
+}
+
+mae_metric(test_data$Price_nor, p)
+
+mse_metric <- function(actual, prediction){
+  sq_error <- (actual - prediction)**2
+  mean(sq_error)
+}  
+
+mse_metric(test_data$Price_nor, p)
+
+rmse_metric <- function(actual, prediction){
+  #root mean squared error
+  sq_error <- (actual - prediction)**2
+  sqrt(mean(sq_error)) ## back to normal unit
+}
+
+rmse_metric(test_data$Price_nor, p)
