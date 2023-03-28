@@ -1,0 +1,58 @@
+play_game <- function(){
+  
+  print("Pao Ying Chub Games..")
+  print("----------------------------------------------")
+  print("Choose 'R'= Rock, 'P'= Paper, 'S'= Scissors ")
+  print("If you wanna be loser you can type 'exit' anytime")
+  tie <- 0
+  win <- 0
+  lose <- 0
+  option <- c("R","P","S")
+
+  while(TRUE){
+
+    print("Choose one Bro!")
+    player_select <- readLines ("stdin",1)
+    computer_select <- sample(option,1)
+
+    if (player_select == computer_select){
+      print(paste("You choose",player_select))
+      print(paste("Computer choose",computer_select))
+      tie <- tie+1
+      print("Tie !!!")
+    }
+
+    else if ((player_select == "R" & computer_select == "S")
+        | (player_select == "S" & computer_select == "P")
+        | (player_select == "P" & computer_select == "R")){
+      print(paste("You choose",player_select))
+      print(paste("Computer choose",computer_select))
+      win <- win+1
+      print("You Win !!!")
+      }
+
+    else if ((player_select == "R" & computer_select == "P")
+        | (player_select == "S" & computer_select == "R")
+        | (player_select == "P" & computer_select == "S")){
+      print(paste("You choose",player_select))
+      print(paste("Computer choose",computer_select))
+      lose <- lose+1
+      print("You Lose !!!")
+      }
+    else if (player_select == "exit"){
+      total <- win+lose+tie
+      print(paste("Total Round   : ", total))
+      print(paste("Total Win   : ", win))
+      print(paste("Total Lose  : ", lose))
+      print(paste("Total Tie   : ", tie))
+      print("Thank You for your time.")
+      break
+    } else {
+      print("!!!'R'= Rock, 'P'= Paper, 'S'= Scissors !!!")
+    }
+  }
+
+  
+}
+
+play_game()
